@@ -1,0 +1,101 @@
+​ sklearn（即srilit-learn第三方库）的数据集库datasets提供很多不同的数据集，我们需要使用到的如下：
+1、波士顿房价
+​ 统计了波士顿506处房屋的13种不同特征（ 包含城镇犯罪率、一氧化氮浓度、住宅平均房间数、到中心区域的加权距离以及自住房平均房价等 ）以及房屋的价格，适用于回归任务。
+
+from sklearn import datasets  # 导入库
+
+boston = datasets.load_boston()  # 导入波士顿房价数据
+print(boston.keys())  # 查看键(属性)     ['data','target','feature_names','DESCR', 'filename'] 
+print(boston.data.shape,boston.target.shape)  # 查看数据的形状 (506, 13) (506,)
+print(boston.feature_names)  # 查看有哪些特征 这里共13种
+print(boston.DESCR)  # described 描述这个数据集的信息 
+print(boston.filename)  # 文件路径 
+
+2、鸢尾花
+​ 这个数据集包含了150个鸢尾花样本，对应3种鸢尾花，各50个样本，以及它们各自对应的4种关于花外形的数据 ，适用于分类任务。
+
+from sklearn import datasets  # 导入库
+
+iris = datasets.load_iris()  # 导入鸢尾花数据
+print(iris.data.shape,iris.target.shape)  # (150, 4) (150,)
+print(iris.feature_names)  # [花萼长，花萼宽，花瓣长，花瓣宽]
+
+
+样本生成器
+(一) 簇
+from sklearn import datasets
+
+centers = [[2,2],[8,2],[2,8],[8,8]]
+x, y = datasets.make_blobs(n_samples=1000, n_features=2, centers=4,cluster_std=1)
+n_samples:样本数
+
+n_features:特征数（维度）
+
+centers:中心数，也可以是中心的坐标
+
+cluster_std:簇的方差
+
+(二) 同心圆
+x, y = datasets.make_circles(n_samples=5000, noise=0.04, factor=0.7)
+noise:噪声
+
+factor:内圆与外圆的距离 为1的时候最小
+
+(三) 月牙
+x, y = datasets.make_moons(n_samples=3000, noise=0.05)
+(四) 分类
+x, y =datasets.make_classification(n_classes=4, n_samples=1000, n_features=2, n_informative=2 , n_redundant=0, n_clusters_per_class=1,n_repeated=0, random_state=22)
+n_classes:类的数目
+
+n_informative:有效的特征数
+
+n_redundant:冗余特征数 有效特征数的线性组合
+
+n_repeated:有效特征数和冗余特征数的有效组合
+
+n_informative + n_redundant + n_repeated < = n_features
+
+n_clusters_per_class:每一类的簇数
+
+n_classes * n_clusters_per_class <= 2**n_informative
+
+样本图片
+​ scikit 在通过图片的作者共同授权下嵌入了几个样本 JPEG 图片。这些图像为了方便用户对 test algorithms （测试算法）和 pipeline on 2D data （二维数据管道）进行测试，用datasets.load_sample_image()加载。
+
+from sklearn import datasets
+import matplotlib.pyplot as plt
+
+img = datasets.load_sample_image('flower.jpg')
+print(img.shape)  # (427, 640, 3)
+print(img.dtype)  # uint8
+plt.imshow(img)
+plt.show()
+
+
+从外部加载的数据
+​ 建议除了玩具数据集和生成数据集以外，都在网上下载后用pandas导入。
+
+kaggle：https://www.kaggle.com
+
+天池：https://tianchi.aliyun.com/dataset
+
+搜狗实验室：http://www.sogou.com/labs/resource/list_pingce.php
+
+DC竞赛：https://www.pkbigdata.com/common/cmptIndex.html
+
+DF竞赛：https://www.datafountain.cn/datasets
+
+​ 例如，导入iris文件：
+
+import pandas as pd
+import seaborn as sns  # 基于matplotlib和pandas的画图库 
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('G:\iris.csv', encoding='gbk')  # 我把数据集列名改成了中文 所以用gbk解码
+sns.relplot(x='花萼长', y='花瓣长', hue='类别',data=data)  # seaborn库这里不做过多介绍
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
+# plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
+plt.show()
+
+总结
+​ sklearn的数据集datasets库中，我们一般使用玩具数据集和样本生成器比较多，其他数据建议外部导入。
